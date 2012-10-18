@@ -15,7 +15,7 @@ How do I get bmpc?
 As of right now, the only way to get bmpc is by cloning in this git
 repository at git://git.silverirc.com/bmpc.git .
 
-How to run screenFetch
+How to run bmpc
 ------------------------
 
 To run bmpc, open a terminal and cd to the cloned git repository
