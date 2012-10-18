@@ -18,6 +18,11 @@ if [ -z "$MPD_HOST" ]; then HOST="localhost"; else HOST="$MPD_HOST"; fi
 if [ -z "$MPD_PORT" ]; then PORT="6600"; else PORT="$MPD_PORT"; fi
 MPD_TCP="/dev/tcp/$HOST/$PORT"
 
+# Define some empty vars
+
+
+
+
 # Common Functions
 
 function mpd_sndcommmand() {
@@ -82,11 +87,15 @@ case "$1" in
 	'next')
 		mpd_sndcommmand next
 		mpd_getinfo
-		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} kbps ${c2})${c0}"
+		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
 	;;
 	'prev')
 		mpd_sndcommmand previous
 		mpd_getinfo
-		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} kbps ${c2})${c0}"
+		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
+	;;
+	'current')
+		mpd_getinfo
+		echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
 	;;
 esac
