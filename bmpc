@@ -18,14 +18,10 @@ if [ -z "$MPD_HOST" ]; then HOST="localhost"; else HOST="$MPD_HOST"; fi
 if [ -z "$MPD_PORT" ]; then PORT="6600"; else PORT="$MPD_PORT"; fi
 MPD_TCP="/dev/tcp/$HOST/$PORT"
 
-# Define some empty vars
-
-
-
 
 # Common Functions
 
-function mpd_sndcommmand() {
+function mpd_sndcommand() {
         # $1 command
         exec 5<> $MPD_TCP 2>/dev/null
         [[ $? -gt 0 ]] && return 1
@@ -37,9 +33,15 @@ function mpd_sndcommmand() {
         return 0
 }
 
+function extract_field() {
+        # $1 field_name
+        # $2 search body
+        _ret=$(grep "^$1: " <<< "$2" 2>/dev/null | sed "s/$1: //")
+}
+
 function mpd_getinfo() {
 	if [[ `pgrep mpd` ]]; then
-		mpd_sndcommmand currentsong
+		mpd_sndcommand currentsong
 		[[ $? -gt 0 ]] && return 1
 		_tmp=$_ret
 		mpdTitle=$(grep "^Title: " <<< "$_tmp" 2>/dev/null | sed "s/Title: //")
@@ -53,7 +55,7 @@ function mpd_getinfo() {
 		mpdLength="$_mm:$_ss"
 		mpdDate=$(grep "^Date: " <<< "$_tmp" 2>/dev/null | sed "s/Date: //")
 		mpdGenre=$(grep "^Genre: " <<< "$_tmp" 2>/dev/null | sed "s/Genre: //")
-		mpd_sndcommmand "status"
+		mpd_sndcommand "status"
 		_tmp=$_ret
 		mpdSongID=$(grep "^song: " <<< "$_tmp" 2>/dev/null | sed "s/song: //")
 		mpdPlaylistL=$(grep "^playlistlength: " <<< "$_tmp" 2>/dev/null | sed "s/playlistlength: //")
@@ -85,17 +87,55 @@ case "$1" in
 		exit
 	;;
 	'next')
-		mpd_sndcommmand next
+		mpd_sndcommand next
 		mpd_getinfo
 		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
 	;;
 	'prev')
-		mpd_sndcommmand previous
+		mpd_sndcommand previous
 		mpd_getinfo
 		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
 	;;
 	'current')
 		mpd_getinfo
 		echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
+	;;
+	'set')
+		case "$2" in
+			'random')
+				mpd_sndcommand status random
+				mpd_randomstate=$(echo "$_ret" | grep "random:" 2>/dev/null | sed 's/random: //')
+				if [ "$mpd_randomstate" == "0" ]; then
+					mpd_sndcommand 'random 1'
+					echo -e " ${c2}>>${c1} Settings${c0}\tRandom status now set to${c2} on${c0}."
+				elif [ "$mpd_randomstate" == "1" ]; then
+					mpd_sndcommand 'random 0'
+					echo -e " ${c2}>>${c1} Settings${c0}\tRandom status now set to${c2} off${c0}."
+				fi
+			;;
+			'repeat')
+				mpd_sndcommand status repeat
+				mpd_repeatstate=$(echo "$_ret" | grep "repeat:" 2>/dev/null | sed 's/repeat: //')
+				if [ "$mpd_repeatstate" == "0" ]; then
+					mpd_sndcommand 'repeat 1'
+					echo -e " ${c2}>>${c1} Settings${c0}\tRepeat status now set to${c2} on${c0}."
+				elif [ "$mpd_repeatstate" == "1" ]; then
+					mpd_sndcommand 'repeat 0'
+					echo -e " ${c2}>>${c1} Settings${c0}\tRepeat status now set to${c2} off${c0}."
+				fi
+			;;
+		esac
+	;;
+	'rawquery')
+		while [ -n "$2" ]; do
+			_opts="$_opts $2"
+			shift
+			if [ $? -ne 0 ]; then
+				break
+			fi
+		done
+		# echo $_opts
+		mpd_sndcommand "$_opts"
+		echo "$_ret"
 	;;
 esac
