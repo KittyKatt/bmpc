@@ -82,11 +82,11 @@ case "$1" in
 	'next')
 		mpd_sndcommmand next
 		mpd_getinfo
-		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} ${c2})${c0}"
+		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} kbps ${c2})${c0}"
 	;;
 	'prev')
 		mpd_sndcommmand previous
 		mpd_getinfo
-		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} ${c2})${c0}"
+		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID} ${bold}/${c0} ${mpdPlaylistL} ${c2})${c0} ${c2}(${c0} ${mpdTitle} ${bold}-${c0} ${mpdArtist} ${bold}-${c0} ${mpdAlbum} ${c2})${c0} ${c2}(${c0} ${mpdLength}${bold} at${c0} ${mpdBitrate} kbps ${c2})${c0}"
 	;;
 esac
