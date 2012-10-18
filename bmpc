@@ -74,9 +74,14 @@ function mpd_getinfo() {
 
 function displayHelp() {
 	echo -e "${c1}bmpc${c0} : The BASH MPD Client\e[0m"
-	echo -e "\t${c2} help | -h${c0}\t\e[0m Display this help message."
-        echo -e "\t${c2} next${c0}\t\t\e[0m Jump to next song on playlist."
-        echo -e "\t${c2} prev${c0}\t\t\e[0m Jump to previous song on playlist."
+	echo -e "\t${c2}help | -h${c0}\t\e[0m Display this help message."
+        echo -e "\t${c2}next${c0}\t\t\e[0m Jump to next song on playlist."
+        echo -e "\t${c2}prev${c0}\t\t\e[0m Jump to previous song on playlist."
+        echo -e "\t${c2}rawquery${c0}\t\e[0m Returns output of raw TCP commands to the MPD server."
+	echo -ne "\n"
+        echo -e "\t${c2}set${c0}\t\t\e[0m Displays various server settings."
+        echo -e "\t${c2}set random${c0}\t\e[0m Toggles random playback."
+        echo -e "\t${c2}set repeat${c0}\t\e[0m Toggles repeat playback."
 }
 
 # Code
@@ -125,6 +130,13 @@ case "$1" in
 				fi
 			;;
 		esac
+		if [ -z "$2" ]; then
+			mpd_sndcommand status
+			mpd_randomstate=$(echo "$_ret" | grep "random:" 2>/dev/null | sed -e 's/random: //' -e 's/0/off/' -e 's/1/on/')
+			mpd_repeatstate=$(echo "$_ret" | grep "repeat:" 2>/dev/null | sed -e 's/repeat: //' -e 's/0/off/' -e 's/1/on/')
+			mpd_xfadestate=$(echo "$_ret" | grep "xfade:" 2>/dev/null | sed -e 's/xfade: //' -e 's/0/off/' -e 's/1/on/')
+			echo -e " ${c2}>>${c1} Settings${c0}\t${c2}Random:${c0} ${mpd_randomstate} ${bold}-${c0} ${c2}Repeat:${c0} ${mpd_repeatstate} ${bold}-${c0} ${c2}Crossfade:${c0} ${mpd_xfadestate}${c0}"
+		fi
 	;;
 	'rawquery')
 		while [ -n "$2" ]; do
