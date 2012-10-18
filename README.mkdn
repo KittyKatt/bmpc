@@ -1,0 +1,39 @@
+bmpc - The BASH Music Player Daemon (MPD) Client
+===============
+
+What is bmpc?
+---------------------
+
+bmpc is a Music Player Daemon (MPD) written in BASH. It uses a BASH 
+socket to connect over TCP to your MPD server and executes commands
+with a nice output.
+
+
+How do I get bmpc?
+---------------------
+
+As of right now, the only way to get bmpc is by cloning in this git
+repository at git://git.silverirc.com/bmpc.git .
+
+How to run screenFetch
+------------------------
+
+To run bmpc, open a terminal and cd to the cloned git repository
+directory. Then, just `./bmpc COMMAND` to use it. Alternatively,
+you can move bmpc into your $PATH somewhere and use it without the
+./ for current directory execution.
+
+Here's the current output of `bmpc -h`:
+
+        help | -h		Display this help.
+	next 			Jump to next song on playlist.
+	prev			Jump to previous song on playlist.
+
+
+Contact Me
+------------------------
+
+If you would like to suggest something new, inform me of an issue in the
+script, become part of the project, or talk to me about anything else,
+you can either email me at `kittykattATkittykattDOTus` or you can connect
+to my IRC server on SilverIRC at irc://kittykatt.silverirc.com/me0wz
