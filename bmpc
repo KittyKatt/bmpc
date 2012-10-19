@@ -105,6 +105,11 @@ case "$1" in
 		mpd_getinfo
 		echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
 	;;
+	'delcurrent')
+		mpd_getinfo
+		mpd_sndcommand next
+		mpd_sndcommand "delete ${mpdSongID}"
+	;;
 	'set')
 		case "$2" in
 			'random')
@@ -151,3 +156,5 @@ case "$1" in
 		echo "$_ret"
 	;;
 esac
+
+exit 0
