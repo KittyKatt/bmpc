@@ -78,7 +78,8 @@ function displayHelp() {
         echo -e "\t${c2}next${c0}\t\t\e[0m Jump to next song on playlist."
         echo -e "\t${c2}prev${c0}\t\t\e[0m Jump to previous song on playlist."
         echo -e "\t${c2}current${c0}\t\e[0m Shows information on currently laying song."
-        echo -e "\t${c2}delcurrent${c0}\t\e[0m Removes currently playing song from playlist."
+        echo -e "\t${c2}rm SONGID${c0}\t\e[0m Removes song with SONGID from playlist."
+        echo -e "\t${c2}rm current${c0}\t\e[0m Removes currently playing song from playlist."
         echo -e "\t${c2}rawquery${c0}\t\e[0m Returns output of raw TCP commands to the MPD server."
 	echo -ne "\n"
         echo -e "\t${c2}set${c0}\t\t\e[0m Displays various server settings."
@@ -107,10 +108,19 @@ case "$1" in
 		mpd_getinfo
 		echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
 	;;
-	'delcurrent')
-		mpd_getinfo
-		mpd_sndcommand next
-		mpd_sndcommand "delete ${mpdSongID}"
+	'rm')
+		if [ ! "$2" ]; then echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
+		else
+			if [ "$2" == "current" ]; then
+				mpd_getinfo
+				mpd_sndcommand next
+				mpd_sndcommand "delete ${mpdSongID}"
+			elif [ `echo "$2" | grep "^[0-9]*$" 2>/dev/null` ]; then
+				mpd_sndcommand "delete ${2}"
+			else
+				echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
+			fi
+		fi
 	;;
 	'set')
 		case "$2" in
@@ -156,6 +166,11 @@ case "$1" in
 		# echo $_opts
 		mpd_sndcommand "$_opts"
 		echo "$_ret"
+	;;
+	*)
+		echo -e " ${c5}ERROR!${c0}\tThat is not a valid command. Please see bmpc --help or bmpc help for"
+		echo -e "\ta list of available commands."
+		exit 1
 	;;
 esac
 
