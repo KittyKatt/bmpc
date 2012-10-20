@@ -28,6 +28,13 @@ Here's the current output of `bmpc -h`:
 	help | -h		Display this help.
 	next 			Jump to next song on playlist.
 	prev			Jump to previous song on playlist.
+	current			Shows information on currently playing song.
+	rm SONGID		Removes song with id SONGID from the playlist.
+	rm current		Removes the currently playing song from the playlist.
+
+	set			Displays various settings about the MPD server.
+	set random		Toggles random playback.
+	set repeat		Toggles repeat behavior on playback.
 
 
 Contact Me

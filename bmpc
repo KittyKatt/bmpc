@@ -77,7 +77,7 @@ function displayHelp() {
 	echo -e "\t${c2}help | -h${c0}\t\e[0m Display this help message."
         echo -e "\t${c2}next${c0}\t\t\e[0m Jump to next song on playlist."
         echo -e "\t${c2}prev${c0}\t\t\e[0m Jump to previous song on playlist."
-        echo -e "\t${c2}current${c0}\t\e[0m Shows information on currently laying song."
+        echo -e "\t${c2}current${c0}\t\t\e[0m Shows information on currently laying song."
         echo -e "\t${c2}rm SONGID${c0}\t\e[0m Removes song with SONGID from playlist."
         echo -e "\t${c2}rm current${c0}\t\e[0m Removes currently playing song from playlist."
         echo -e "\t${c2}rawquery${c0}\t\e[0m Returns output of raw TCP commands to the MPD server."
