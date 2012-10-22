@@ -12,12 +12,6 @@ bold="\e[1m"
 underline="\e[4m"
 c0="\e[0m"
 
-# MPD server settings
-
-if [ -z "$MPD_HOST" ]; then HOST="localhost"; else HOST="$MPD_HOST"; fi
-if [ -z "$MPD_PORT" ]; then PORT="6600"; else PORT="$MPD_PORT"; fi
-MPD_TCP="/dev/tcp/$HOST/$PORT"
-
 
 # Common Functions
 
@@ -93,12 +87,10 @@ function displayHelp() {
 # Code
 
 case "$1" in
-
 	'--host')
-		if [ ! "$2" ]; then
-			if [ ! "$3" ]; then
-				echo -e " ${c5} ERROR!${c0}  You did not supply a host and/or a command."
-			fi
+		if [ ! "$3" ]; then
+			echo -e " ${c5} ERROR!${c0}  You did not supply a host and/or a command."
+			exit 1
 		else
 			MPD_HOST="$2"
 			shift 2
@@ -112,8 +104,15 @@ case "$1" in
 		c5=${c0}
 		shift
 	;;
+esac
 
+# MPD server settings
 
+if [ -z "$MPD_HOST" ]; then HOST="localhost"; else HOST="$MPD_HOST"; fi
+if [ -z "$MPD_PORT" ]; then PORT="6600"; else PORT="$MPD_PORT"; fi
+MPD_TCP="/dev/tcp/$HOST/$PORT"
+
+case "$1" in
 	'help'|'-h'|'--help')
 		displayHelp
 		exit
