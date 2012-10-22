@@ -93,13 +93,16 @@ function displayHelp() {
 # Code
 
 case "$1" in
-	'-h'|'--help')
-		displayHelp
-		exit
-	;;
+
 	'--host')
-		MPD_HOST="$2"
-		shift 2
+		if [ ! "$2" ]; then
+			if [ ! "$3" ]; then
+				echo -e " ${c5} ERROR!${c0}  You did not supply a host and/or a command."
+			fi
+		else
+			MPD_HOST="$2"
+			shift 2
+		fi
 	;;
 	'--nocolor')
 		c1=${c0}
@@ -109,10 +112,9 @@ case "$1" in
 		c5=${c0}
 		shift
 	;;
-esac
 
-case "$1" in
-	'help')
+
+	'help'|'-h'|'--help')
 		displayHelp
 		exit
 	;;
@@ -188,6 +190,10 @@ case "$1" in
 		# echo $_opts
 		mpd_sndcommand "$_opts"
 		echo "$_ret"
+	;;
+	"")
+		echo -e " ${c5}ERROR!${c0}\t You must supply a command! Please see --help, -h, or help for a list of commands."
+		exit 1
 	;;
 	*)
 		echo -e " ${c5}ERROR!${c0}\tThat is not a valid command. Please see bmpc --help or bmpc help for"
