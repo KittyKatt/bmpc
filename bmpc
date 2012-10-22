@@ -74,23 +74,45 @@ function mpd_getinfo() {
 
 function displayHelp() {
 	echo -e "${c1}bmpc${c0} : The BASH MPD Client\e[0m"
-	echo -e "\t${c2}help | -h${c0}\t\e[0m Display this help message."
-        echo -e "\t${c2}next${c0}\t\t\e[0m Jump to next song on playlist."
-        echo -e "\t${c2}prev${c0}\t\t\e[0m Jump to previous song on playlist."
-        echo -e "\t${c2}current${c0}\t\t\e[0m Shows information on currently laying song."
-        echo -e "\t${c2}rm SONGID${c0}\t\e[0m Removes song with SONGID from playlist."
-        echo -e "\t${c2}rm current${c0}\t\e[0m Removes currently playing song from playlist."
-        echo -e "\t${c2}rawquery${c0}\t\e[0m Returns output of raw TCP commands to the MPD server."
+	echo -e "\t${c2}help${c0}\t Display this help message."
+        echo -e "\t${c2}next${c0}\t\t Jump to next song on playlist."
+        echo -e "\t${c2}prev${c0}\t\t Jump to previous song on playlist."
+        echo -e "\t${c2}current${c0}\t\t Shows information on currently laying song."
+        echo -e "\t${c2}rm SONGID${c0}\t Removes song with SONGID from playlist."
+        echo -e "\t${c2}rm current${c0}\t Removes currently playing song from playlist."
+        echo -e "\t${c2}rawquery${c0}\t Returns output of raw TCP commands to the MPD server."
+        echo -e "\t${c2}set${c0}\t\t Displays various server settings."
+        echo -e "\t${c2}set random${c0}\t Toggles random playback."
+        echo -e "\t${c2}set repeat${c0}\t Toggles repeat playback."
 	echo -ne "\n"
-        echo -e "\t${c2}set${c0}\t\t\e[0m Displays various server settings."
-        echo -e "\t${c2}set random${c0}\t\e[0m Toggles random playback."
-        echo -e "\t${c2}set repeat${c0}\t\e[0m Toggles repeat playback."
+	echo -e "\t${c2}-h|--help${c0}\t Display this help message."
+	echo -e "\t${c2}--host HOST${c0}\t Specify MPD_HOST."
+	echo -e "\t${c2}--nocolor${c0}\t Specify bmpc to use no colors."
 }
 
 # Code
 
 case "$1" in
-	'-h'|'help')
+	'-h'|'--help')
+		displayHelp
+		exit
+	;;
+	'--host')
+		MPD_HOST="$2"
+		shift 2
+	;;
+	'--nocolor')
+		c1=${c0}
+		c2=${c0}
+		c3=${c0}
+		c4=${c0}
+		c5=${c0}
+		shift
+	;;
+esac
+
+case "$1" in
+	'help')
 		displayHelp
 		exit
 	;;
