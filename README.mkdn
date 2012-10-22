@@ -25,9 +25,13 @@ you can move bmpc into your $PATH somewhere and use it without the
 
 Here's the current output of `bmpc -h`:
 
-	help | -h		Display this help.
+	help | -h | --help	Display this help.
 	next 			Jump to next song on playlist.
 	prev			Jump to previous song on playlist.
+	pause			Pause current playback.
+	stop			Stop current playback.
+	play			Resume playback from stop or pause.
+	toggle			Toggles between play|pause/stop. Useful for keybindings.
 	current			Shows information on currently playing song.
 	rm SONGID		Removes song with id SONGID from the playlist.
 	rm current		Removes the currently playing song from the playlist.
@@ -36,6 +40,8 @@ Here's the current output of `bmpc -h`:
 	set random		Toggles random playback.
 	set repeat		Toggles repeat behavior on playback.
 
+	--host HOST		 Specify MPD_HOST.
+	--nocolor		 Specify bmpc to use no colors.
 
 Contact Me
 ------------------------
