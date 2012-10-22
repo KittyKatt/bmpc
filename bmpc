@@ -89,7 +89,7 @@ function displayHelp() {
 case "$1" in
 	'--host')
 		if [ ! "$3" ]; then
-			echo -e " ${c5} ERROR!${c0}  You did not supply a host and/or a command."
+			echo -e "  ${c5} ERROR!${c0}  You did not supply a host and/or a command."
 			exit 1
 		else
 			MPD_HOST="$2"
@@ -115,7 +115,7 @@ MPD_TCP="/dev/tcp/$HOST/$PORT"
 case "$1" in
 	'help'|'-h'|'--help')
 		displayHelp
-		exit
+		exit 0
 	;;
 	'next')
 		mpd_sndcommand next
@@ -126,6 +126,39 @@ case "$1" in
 		mpd_sndcommand previous
 		mpd_getinfo
 		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
+	;;
+	'stop')
+		mpd_sndcommand stop
+	;;
+	'pause')
+		mpd_sndcommand status
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "play" ]; then
+			mpd_sndcommand 'pause 1'
+		else
+			echo -e " ${c5}ERROR!${c0}\t Playback is already paused or stopped."
+		fi
+	;;
+	'play')
+		mpd_sndcommand status
+		mpd_currentid=$(echo "$_ret" | grep '^song:' 2>/dev/null  | sed 's/song: //')
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "pause" ]; then
+			mpd_sndcommand 'pause 0'
+		elif [ "$mpd_status" = "stop" ]; then
+			mpd_sndcommand "play $mpd_currentid"
+		else
+			echo -e " ${c5}ERROR!${c0}\t Playback is already playing."
+		fi
+	;;
+	'toggle')
+		mpd_sndcommand status
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "pause" ]; then
+			mpd_sndcommand 'pause 0'
+		elif [ "$mpd_status" = "play" ]; then
+			mpd_sndcommand 'pause 1'
+		fi
 	;;
 	'current')
 		mpd_getinfo
