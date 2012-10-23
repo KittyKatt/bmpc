@@ -182,6 +182,17 @@ case "$1" in
 			fi
 		fi
 	;;
+	# 'add')
+	#	while [ -n "$2" ]; do
+	#		_uri="$_uri $2"
+	#		shift
+	#		if [ $? -ne 0 ]; then
+	#			break
+	#		fi
+	#	done
+	#	echo "$_uri"
+	#	mpd_sndcommand 'addid $_uri'
+	;;
 	'set')
 		case "$2" in
 			'random')
@@ -215,6 +226,10 @@ case "$1" in
 			echo -e " ${c2}>>${c1} Settings${c0}\t${c2}Random:${c0} ${mpd_randomstate} ${bold}-${c0} ${c2}Repeat:${c0} ${mpd_repeatstate} ${bold}-${c0} ${c2}Crossfade:${c0} ${mpd_xfadestate}${c0}"
 		fi
 	;;
+	# 'playlist')
+	#	mpd_sndcommand playlistinfo
+	#	echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
+	#;;
 	'rawquery')
 		while [ -n "$2" ]; do
 			_opts="$_opts $2"
