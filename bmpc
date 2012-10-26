@@ -192,7 +192,7 @@ case "$1" in
 	#	done
 	#	echo "$_uri"
 	#	mpd_sndcommand 'addid $_uri'
-	;;
+	#;;
 	'set')
 		case "$2" in
 			'random')
