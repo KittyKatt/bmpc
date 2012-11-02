@@ -19,6 +19,7 @@ function mpd_sndcommand() {
         # $1 command
         exec 5<> $MPD_TCP 2>/dev/null
         [[ $? -gt 0 ]] && return 1
+	if [ "$MPD_PASS" ]; then echo "password $MPD_PASS" >&5; fi
         echo $1 >&5
         echo "close" >&5
         tmp=$(cat <&5)
@@ -97,6 +98,24 @@ case "$1" in
 			exit 1
 		else
 			MPD_HOST="$2"
+			shift 2
+		fi
+	;;
+	'--port')
+		if [ ! "$3" ]; then
+			echo -e "  ${c5} ERROR!${c0}  You did not supply a port and/or a command."
+			exit 1
+		else
+			MPD_PORT="$2"
+			shift 2
+		fi
+	;;
+	'--pass')
+		if [ ! "$3" ]; then
+			echo -e "  ${c5} ERROR!${c0}  You did not supply a pass and/or a command."
+			exit 1
+		else
+			MPD_PASS="$2"
 			shift 2
 		fi
 	;;
