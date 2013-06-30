@@ -256,7 +256,7 @@ case "$1" in
 	#	mpd_sndcommand playlistinfo
 	#	echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
 	#;;
-	'rawquery')
+	'raw-query')
 		while [ -n "$2" ]; do
 			_opts="$_opts $2"
 			shift
@@ -267,6 +267,37 @@ case "$1" in
 		# echo $_opts
 		mpd_sndcommand "$_opts"
 		echo "$_ret"
+	;;
+	'vol')
+		if [ -z "$2" ]; then
+			mpd_sndcommand status
+			mpd_volume=$(awk '/^volume:/{ print $2 };' <<< "${_ret}")
+			echo "$mpd_volume"
+			echo -e " ${c2}>>${c1} Volume:  ${c2}${mpd_volume}%${c0}"
+		else
+			intchar=$(echo "$2" | cut -c1)
+			if [[ "${intchar}" == "+" ]]; then
+				vol_plus=$(echo "$2" | sed 's/^+//')
+				mpd_sndcommand status
+				mpd_volume=$(awk '/^volume:/{ print $2 };' <<< "${_ret}")
+				mpd_newvol=$(( ${mpd_volume} + ${vol_plus} ))
+				[[ "${mpd_newvol}" -ge "101" ]] && mpd_newvol="100"
+				mpd_sndcommand "setvol ${mpd_newvol}"
+				echo -e " ${c2}>>${c1} Volume set to:  ${c2}${mpd_newvol}%${c0}"
+			elif [[ "${intchar}" == "-" ]]; then
+				vol_plus=$(echo "$2" | sed 's/^-//')
+				mpd_sndcommand status
+				mpd_volume=$(awk '/^volume:/{ print $2 };' <<< "${_ret}")
+				mpd_newvol=$(( ${mpd_volume} - ${vol_plus} ))
+				[[ "${mpd_newvol}" -le "0" ]] && mpd_newvol="0"
+				mpd_sndcommand "setvol ${mpd_newvol}"
+				echo -e " ${c2}>>${c1} Volume set to:  ${c2}${mpd_newvol}%${c0}"
+			else
+				mpd_newvol="${2}"
+				mpd_sndcommand "setvol ${mpd_newvol}"
+				echo -e " ${c2}>>${c1} Volume set to:  ${c2}${mpd_newvol}%${c0}"
+			fi
+		fi
 	;;
 	"")
 		echo -e " ${c5}ERROR!${c0}\t You must supply a command! Please see --help, -h, or help for a list of commands."
