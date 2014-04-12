@@ -192,7 +192,24 @@ case "$1" in
 	;;
 	'current')
 		mpd_getinfo
-		echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
+		shift
+		if [[ "${1}" == "--format" ]]; then
+			shift
+			format="${@}"
+			output=$(echo "${format}" | \
+				sed "s/%artist%/${mpdArtist:-N/A}/g" | \
+				sed "s/%track%/${mpdTitle:-N/A}/g" | \
+				sed "s/%album%/${mpdAlbum:-N/A}/g" | \
+				sed "s/%songid%/${mpdSongID:-N/A}/g" | \
+				sed "s/%genre%/${mpdGenre:-N/A}/g" | \
+				sed "s/%date%/${mpdDate:-N/A}/g" | \
+				sed "s/%length%/${mpdLength:-N/A}/g" | \
+				sed "s/%currenttime%/${mpdNowTime:-N/A}/g" | \
+				sed "s/%bitrate%/${mpdBitrate:-N/A}/g")
+			echo "${output}"
+		else
+			echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
+		fi
 	;;
 	'rm')
 		if [ ! "$2" ]; then echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
