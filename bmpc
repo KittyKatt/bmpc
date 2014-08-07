@@ -316,6 +316,14 @@ case "$1" in
 			fi
 		fi
 	;;
+	'wait')
+		while :; do
+			mpd_sndcommand "idle player"
+			if [ -n "${_ret}" ]; then
+				echo "${_ret}"
+			fi
+		done
+	;;
 	"")
 		echo -e " ${c5}ERROR!${c0}\t You must supply a command! Please see --help, -h, or help for a list of commands."
 		exit 1
