@@ -79,7 +79,7 @@ function displayHelp() {
         echo -e "\t${c2}current${c0}\t\t Shows information on currently laying song."
         echo -e "\t${c2}rm SONGID${c0}\t Removes song with SONGID from playlist."
         echo -e "\t${c2}rm current${c0}\t Removes currently playing song from playlist."
-        echo -e "\t${c2}rawquery${c0}\t Returns output of raw TCP commands to the MPD server."
+        echo -e "\t${c2}raw${c0}\t Returns output of raw TCP commands to the MPD server."
         echo -e "\t${c2}set${c0}\t\t Displays various server settings."
         echo -e "\t${c2}set random${c0}\t Toggles random playback."
         echo -e "\t${c2}set repeat${c0}\t Toggles repeat playback."
@@ -273,7 +273,7 @@ case "$1" in
 	#	mpd_sndcommand playlistinfo
 	#	echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
 	#;;
-	'raw-query')
+	'raw')
 		while [ -n "$2" ]; do
 			_opts="$_opts $2"
 			shift
