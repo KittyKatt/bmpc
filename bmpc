@@ -285,6 +285,38 @@ case "$1" in
 		mpd_sndcommand "$_opts"
 		echo "$_ret"
 	;;
+	'status')
+		mpd_sndcommand 'status'
+		mpd_state=$(awk  '/^state: /' <<< "${_ret}")
+		mpd_state=${mpd_state/state: }
+		case ${mpd_state} in
+			'play') mpd_state="Playing" ;;
+			'pause') mpd_state="Paused" ;;
+			'stop') mpd_state="Stopped" ;;
+		esac
+		mpd_plength=$(awk '/^playlistlength: /' <<< "${_ret}")
+		mpd_plength=${mpd_plength/playlistlength: }
+		mpd_vol=$(awk '/^volume: /' <<< "${_ret}")
+		mpd_vol=${mpd_vol/volume: }
+		mpd_cursongid=$(awk '/^songid: /' <<< "${_ret}")
+		mpd_cursongid=${mpd_cursongid/songid: }
+		mpd_nextsongid=$(awk '/^nextsongid: /' <<< "${_ret}")
+		mpd_nextsongid=${mpd_nextsongid/nextsongid: } 
+		mpd_cursong=$(bmpc raw "playlistid ${mpd_cursongid}" | awk '/Title: /' | sed 's/Title: //')
+		mpd_nextsong=$(bmpc raw "playlistid ${mpd_nextsongid}" | awk '/Title: /' | sed 's/Title: //')
+		mpd_rand=$(awk '/^random: /' <<< "${_ret}")
+		mpd_rand=${mpd_rand/random: }
+		if [ "${mpd_rand}" == "1" ]; then mpd_rand="On"; else mpd_rand="Off"; fi
+		mpd_rep=$(awk '/^repeat: /' <<< "${_ret}")
+		mpd_rep=${mpd_rep/repeat: }
+		if [ "${mpd_rep}" == "1" ]; then mpd_rep="On"; else mpd_rep="Off"; fi
+		printf " ${c2}>>${c1} Current Status:${c0}\t${c2}${mpd_state}${c0}\n"
+		printf "    ${c2}Current Volume:\t${c0}${mpd_vol}%%\n"
+		printf "    ${c2}Current Song:\t${c0}${mpd_cursong}\n"
+		printf "    ${c2}Next Song:\t\t${c0}${mpd_nextsong}\n"
+		printf "    ${c2}Random:\t\t${c0}${mpd_rand}\n"
+		printf "    ${c2}Repeat:\t\t${c0}${mpd_rep}\n"
+	;;
 	'vol')
 		if [ -z "$2" ]; then
 			mpd_sndcommand status
