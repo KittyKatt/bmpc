@@ -197,15 +197,15 @@ case "$1" in
 			shift
 			format="${@}"
 			output=$(echo "${format}" | \
-				sed "s/%artist%/${mpdArtist:-N/A}/g" | \
-				sed "s/%track%/${mpdTitle:-N/A}/g" | \
-				sed "s/%album%/${mpdAlbum:-N/A}/g" | \
-				sed "s/%songid%/${mpdSongID:-N/A}/g" | \
-				sed "s/%genre%/${mpdGenre:-N/A}/g" | \
-				sed "s/%date%/${mpdDate:-N/A}/g" | \
-				sed "s/%length%/${mpdLength:-N/A}/g" | \
-				sed "s/%currenttime%/${mpdNowTime:-N/A}/g" | \
-				sed "s/%bitrate%/${mpdBitrate:-N/A}/g")
+				sed "s/%artist%/$(echo ${mpdArtist:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%track%/$(echo ${mpdTitle:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%album%/$(echo ${mpdAlbum:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%songid%/$(echo ${mpdSongID:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%genre%/$(echo ${mpdGenre:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%date%/$(echo ${mpdDate:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%length%/$(echo ${mpdLength:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%currenttime%/$(echo ${mpdNowTime:-N/A} | sed -e 's/[\/&]/\\&/g')/g" | \
+				sed "s/%bitrate%/$(echo ${mpdBitrate:-N/A} | sed -e 's/[\/&]/\\&/g')/g")
 			echo "${output}"
 		else
 			echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
