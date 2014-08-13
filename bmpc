@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-
-# BASH MPD Client
+# name: 		bmpc
+# author : 	KittyKatt
+# description:	BASH MPD Client
 
 # Constants
 c1="\e[1;33m" # Bold Yellow
