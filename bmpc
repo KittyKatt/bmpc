@@ -90,24 +90,29 @@ function mpd_getinfo() {
 
 function displayHelp() {
 	echo -e "${c1}bmpc${c0} : The BASH MPD Client\e[0m"
-	echo -e "\t${c2}help${c0}\t Display this help message."
+	echo -e "\t${c2}help${c0}\t\t Display this help message."
         echo -e "\t${c2}next${c0}\t\t Jump to next song on playlist."
         echo -e "\t${c2}prev${c0}\t\t Jump to previous song on playlist."
         echo -e "\t${c2}pause${c0}\t\t Pause current playback."
         echo -e "\t${c2}stop${c0}\t\t Stop current playback."
         echo -e "\t${c2}play${c0}\t\t Resume playback from stop or pause."
         echo -e "\t${c2}toggle${c0}\t\t Toggles between play|pause/stop. Useful for keybindings."
-        echo -e "\t${c2}current${c0}\t\t Shows information on currently laying song."
+        echo -e "\t${c2}current${c0}\t\t Shows information on currently laying song. Optional --format."
+        echo -e "\t${c2}playlist${c0}\t Shows current playlist in simple format."
+        echo -e "\t${c2}status${c0}\t\t Shows current status of MPD server."
+        echo -e "\t${c2}stats${c0}\t\t Shows statistics about MPD database."
         echo -e "\t${c2}rm SONGID${c0}\t Removes song with SONGID from playlist."
         echo -e "\t${c2}rm current${c0}\t Removes currently playing song from playlist."
-        echo -e "\t${c2}raw${c0}\t Returns output of raw TCP commands to the MPD server."
+        echo -e "\t${c2}raw${c0}\t\t Returns output of raw TCP commands to the MPD server."
         echo -e "\t${c2}set${c0}\t\t Displays various server settings."
         echo -e "\t${c2}set random${c0}\t Toggles random playback."
         echo -e "\t${c2}set repeat${c0}\t Toggles repeat playback."
 	echo -ne "\n"
 	echo -e "\t${c2}-h|--help${c0}\t Display this help message."
+	echo -e "\t${c2}--version${c0}\t Displays version and script information."
 	echo -e "\t${c2}--host HOST${c0}\t Specify MPD_HOST."
 	echo -e "\t${c2}--nocolor${c0}\t Specify bmpc to use no colors."
+	echo -e "\t${c2}--format${c0}\t Used to 'current' to control output."
 }
 
 # Code
