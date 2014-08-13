@@ -13,6 +13,7 @@ bold="\e[1m"
 underline="\e[4m"
 c0="\e[0m"
 
+version="1.5.0"
 
 # Common Functions
 
@@ -165,6 +166,13 @@ MPD_TCP="/dev/tcp/$HOST/$PORT"
 case "$1" in
 	'help'|'-h'|'--help')
 		displayHelp
+		exit 0
+	;;
+	'--version')
+		printf "${c2}bMPC${c0} - ${c1}The BASH MPD Client${c0}\n"
+		printf "The current version of bMPC is ${version}.\n"
+		printf "This script was created and is maintained by KittyKatt (Brett Bohnenkamper).\n"
+		printf "Source can be found at https://github.com/KittyKatt/bmpc\n"
 		exit 0
 	;;
 	'next')
