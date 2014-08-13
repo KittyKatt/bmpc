@@ -35,6 +35,25 @@ function extract_field() {
         _ret=$(grep "^$1: " <<< "$2" 2>/dev/null | sed "s/$1: //")
 }
 
+function gettime() {
+	input="$@"
+	secs=$((${input}%60))
+	mins=$((${input}/60%60))
+	hours=$((${input}/3600%24))
+	days=$((${input}/86400))
+	output="${secs}s"
+	if [ "${mins}" -ne "0" ]; then
+		output="${mins}m ${output}"
+	fi
+	if [ "${hours}" -ne "0" ]; then
+		output="${hours}h ${output}"
+	fi
+	if [ "${days}" -ne "0" ]; then
+		output="${days}d ${output}"
+	fi
+	echo "${output}"
+}
+
 function mpd_getinfo() {
 	if [[ `pgrep mpd` ]]; then
 		mpd_sndcommand currentsong
@@ -333,6 +352,24 @@ case "$1" in
 		printf "    ${c2}Next Song:\t\t${c0}${mpd_nextsong}\n"
 		printf "    ${c2}Random:\t\t${c0}${mpd_rand}\n"
 		printf "    ${c2}Repeat:\t\t${c0}${mpd_rep}\n"
+	;;
+	'stats')
+		mpd_sndcommand stats
+		uptime=$(awk '/^uptime: /{gsub(/uptime: /, ""); print}' <<< "${_ret}")
+		uptime=$(gettime "${uptime}")
+		playtime=$(awk '/^db_playtime: /{gsub(/db_playtime: /, ""); print}' <<< "${_ret}")
+		playtime=$(gettime "${playtime}")
+		db_artists=$(awk '/^artists: /{gsub(/artists: /, ""); print}' <<< "${_ret}")
+		db_songs=$(awk '/^songs: /{gsub(/songs: /, ""); print}' <<< "${_ret}")
+		db_albums=$(awk '/^albums: /{gsub(/albums: /, ""); print}' <<< "${_ret}")
+		last_update=$(awk '/^db_update: /{gsub(/db_update: /, ""); print}' <<< "${_ret}")
+		last_update=$(date -d @${last_update})
+		printf "${c2}Uptime:${c0}\t\t${uptime}\n"
+		printf "${c2}Playtime:${c0}\t${playtime}\n"
+		printf "${c2}Songs in DB:${c0}\t${db_songs}\n"
+		printf "${c2}Artists in DB:${c0}\t${db_artists}\n"
+		printf "${c2}Albums in DB:${c0}\t${db_albums}\n"
+		printf "${c2}Last DB Update:${c0}\t${last_update}\n"
 	;;
 	'vol')
 		if [ -z "$2" ]; then
