@@ -13,7 +13,7 @@ How do I get bmpc?
 ---------------------
 
 As of right now, the only way to get bmpc is by cloning in this git
-repository at git://git.silverirc.com/bmpc.git .
+repository at https://github.com/KittyKatt/bmpc.git .
 
 How to run bmpc
 ------------------------
@@ -49,4 +49,4 @@ Contact Me
 If you would like to suggest something new, inform me of an issue in the
 script, become part of the project, or talk to me about anything else,
 you can either email me at `kittykattATkittykattDOTus` or you can connect
-to my IRC server on SilverIRC at irc://kittykatt.silverirc.com/me0wz
+to Rizon and chat with me at irc://chat.rizon.net/me0wz
