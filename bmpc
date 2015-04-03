@@ -13,7 +13,7 @@ bold="\e[1m"
 underline="\e[4m"
 c0="\e[0m"
 
-version="1.5.0"
+version="1.6.5"
 
 # Common Functions
 
