@@ -187,49 +187,6 @@ case "$1" in
 		mpd_sndcommand "add \"${_uri}\""
 		printf "${c1}>>>${c0} Successfully added song to current playlist.\n"
 	;;
-	'next')
-		mpd_sndcommand next
-		mpd_getinfo
-		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
-	;;
-	'prev')
-		mpd_sndcommand previous
-		mpd_getinfo
-		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
-	;;
-	'stop')
-		mpd_sndcommand stop
-	;;
-	'pause')
-		mpd_sndcommand status
-		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
-		if [ "$mpd_status" = "play" ]; then
-			mpd_sndcommand 'pause 1'
-		else
-			echo -e " ${c5}ERROR!${c0}\t Playback is already paused or stopped."
-		fi
-	;;
-	'play')
-		mpd_sndcommand status
-		mpd_currentid=$(echo "$_ret" | grep '^song:' 2>/dev/null  | sed 's/song: //')
-		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
-		if [ "$mpd_status" = "pause" ]; then
-			mpd_sndcommand 'pause 0'
-		elif [ "$mpd_status" = "stop" ]; then
-			mpd_sndcommand "play $mpd_currentid"
-		else
-			echo -e " ${c5}ERROR!${c0}\t Playback is already playing."
-		fi
-	;;
-	'toggle')
-		mpd_sndcommand status
-		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
-		if [ "$mpd_status" = "pause" ]; then
-			mpd_sndcommand 'pause 0'
-		elif [ "$mpd_status" = "play" ]; then
-			mpd_sndcommand 'pause 1'
-		fi
-	;;
 	'current')
 		mpd_getinfo
 		shift
@@ -272,6 +229,69 @@ case "$1" in
 		done
 		IFS=${OLDIFS}
 	;;
+	'next')
+		mpd_sndcommand next
+		mpd_getinfo
+		echo -e " ${c4}>>>  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
+	;;
+	'pause')
+		mpd_sndcommand status
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "play" ]; then
+			mpd_sndcommand 'pause 1'
+		else
+			echo -e " ${c5}ERROR!${c0}\t Playback is already paused or stopped."
+		fi
+	;;
+	'play')
+		mpd_sndcommand status
+		mpd_currentid=$(echo "$_ret" | grep '^song:' 2>/dev/null  | sed 's/song: //')
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "pause" ]; then
+			mpd_sndcommand 'pause 0'
+		elif [ "$mpd_status" = "stop" ]; then
+			mpd_sndcommand "play $mpd_currentid"
+		else
+			echo -e " ${c5}ERROR!${c0}\t Playback is already playing."
+		fi
+	;;
+	'playlist')
+		mpd_sndcommand playlistinfo
+		# echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
+		playlistinfo=$(echo "${_ret}" | grep -E '(^Title:|^Artist:|^Album:)')
+		playlistinfo=$(echo "${playlistinfo}" | awk '{
+			gsub(/Artist: /, "")
+			gsub(/Title: /, ";")
+			gsub(/Album: /, ";")
+			if (NR % 3)
+			printf("%s", $0)
+			else
+			printf("%s\n", $0)
+		}')
+		OLDIFS=${IFS}
+		IFS=$'\n'
+		for i in "${playlistinfo}"; do
+			awk -F';' '{print $2 " - " $1 " - " $3}' <<< "${i}"
+		done
+		IFS=${OLDIFS}
+	;;
+	'prev')
+		mpd_sndcommand previous
+		mpd_getinfo
+		echo -e " ${c5}<<<  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdLength:-N/A} ${c2})${c0}"
+	;;
+	'raw')
+		while [ -n "$2" ]; do
+			_opts="$_opts $2"
+			shift
+			if [ $? -ne 0 ]; then
+				break
+			fi
+		done
+		# echo $_opts
+		mpd_sndcommand "$_opts"
+		echo "$_ret"
+	;;
 	'rm')
 		if [ ! "$2" ]; then echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
 		else
@@ -286,17 +306,26 @@ case "$1" in
 			fi
 		fi
 	;;
-	# 'add')
-	#	while [ -n "$2" ]; do
-	#		_uri="$_uri $2"
-	#		shift
-	#		if [ $? -ne 0 ]; then
-	#			break
-	#		fi
-	#	done
-	#	echo "$_uri"
-	#	mpd_sndcommand 'addid $_uri'
-	#;;
+	'search')
+		_tag="${2}"
+		_query="${3}"
+		mpd_sndcommand "search "${_tag}" "${_query}""
+		OLDIFS=${IFS}
+		IFS=$'\n'
+		_result=( $(grep -E '^file: ' <<< "${_ret}" ) )
+		if [[ -n "${_result}" ]]; then
+			printf "${c1}>>>${c2} Search Results: ${c0}\n"
+			n=1
+			for r in "${_result[@]}"; do
+				printf "${c2}${n} ${c0}${r/file: /}\n"
+				$((n++))
+			done
+		else
+			printf "${c5}>>>${c0} Search results came back empty. Try a different search TAG or QUERY.\n"
+			exit 1
+		fi
+		IFS=${OLDIFS}
+	;;
 	'set')
 		case "$2" in
 			'random')
@@ -330,57 +359,23 @@ case "$1" in
 			echo -e " ${c2}>>${c1} Settings${c0}\t${c2}Random:${c0} ${mpd_randomstate} ${bold}-${c0} ${c2}Repeat:${c0} ${mpd_repeatstate} ${bold}-${c0} ${c2}Crossfade:${c0} ${mpd_xfadestate}${c0}"
 		fi
 	;;
-	'playlist')
-		mpd_sndcommand playlistinfo
-		# echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
-		playlistinfo=$(echo "${_ret}" | grep -E '(^Title:|^Artist:|^Album:)')
-		playlistinfo=$(echo "${playlistinfo}" | awk '{
-			gsub(/Artist: /, "")
-			gsub(/Title: /, ";")
-			gsub(/Album: /, ";")
-			if (NR % 3)
-			printf("%s", $0)
-			else
-			printf("%s\n", $0)
-		}')
-		OLDIFS=${IFS}
-		IFS=$'\n'
-		for i in "${playlistinfo}"; do
-			awk -F';' '{print $2 " - " $1 " - " $3}' <<< "${i}"
-		done
-		IFS=${OLDIFS}
-	;;
-	'raw')
-		while [ -n "$2" ]; do
-			_opts="$_opts $2"
-			shift
-			if [ $? -ne 0 ]; then
-				break
-			fi
-		done
-		# echo $_opts
-		mpd_sndcommand "$_opts"
-		echo "$_ret"
-	;;
-	'search')
-		_tag="${2}"
-		_query="${3}"
-		mpd_sndcommand "search "${_tag}" "${_query}""
-		OLDIFS=${IFS}
-		IFS=$'\n'
-		_result=( $(grep -E '^file: ' <<< "${_ret}" ) )
-		if [[ -n "${_result}" ]]; then
-			printf "${c1}>>>${c2} Search Results: ${c0}\n"
-			n=1
-			for r in "${_result[@]}"; do
-				printf "${c2}${n} ${c0}${r/file: /}\n"
-				$((n++))
-			done
-		else
-			printf "${c5}>>>${c0} Search results came back empty. Try a different search TAG or QUERY.\n"
-			exit 1
-		fi
-		IFS=${OLDIFS}
+	'stats')
+		mpd_sndcommand stats
+		uptime=$(awk '/^uptime: /{gsub(/uptime: /, ""); print}' <<< "${_ret}")
+		uptime=$(gettime "${uptime}")
+		playtime=$(awk '/^db_playtime: /{gsub(/db_playtime: /, ""); print}' <<< "${_ret}")
+		playtime=$(gettime "${playtime}")
+		db_artists=$(awk '/^artists: /{gsub(/artists: /, ""); print}' <<< "${_ret}")
+		db_songs=$(awk '/^songs: /{gsub(/songs: /, ""); print}' <<< "${_ret}")
+		db_albums=$(awk '/^albums: /{gsub(/albums: /, ""); print}' <<< "${_ret}")
+		last_update=$(awk '/^db_update: /{gsub(/db_update: /, ""); print}' <<< "${_ret}")
+		last_update=$(date -d @${last_update})
+		printf "${c2}Uptime:${c0}\t\t${uptime}\n"
+		printf "${c2}Playtime:${c0}\t${playtime}\n"
+		printf "${c2}Songs in DB:${c0}\t${db_songs}\n"
+		printf "${c2}Artists in DB:${c0}\t${db_artists}\n"
+		printf "${c2}Albums in DB:${c0}\t${db_albums}\n"
+		printf "${c2}Last DB Update:${c0}\t${last_update}\n"
 	;;
 	'status')
 		mpd_sndcommand 'status'
@@ -414,23 +409,17 @@ case "$1" in
 		printf "    ${c2}Random:\t\t${c0}${mpd_rand}\n"
 		printf "    ${c2}Repeat:\t\t${c0}${mpd_rep}\n"
 	;;
-	'stats')
-		mpd_sndcommand stats
-		uptime=$(awk '/^uptime: /{gsub(/uptime: /, ""); print}' <<< "${_ret}")
-		uptime=$(gettime "${uptime}")
-		playtime=$(awk '/^db_playtime: /{gsub(/db_playtime: /, ""); print}' <<< "${_ret}")
-		playtime=$(gettime "${playtime}")
-		db_artists=$(awk '/^artists: /{gsub(/artists: /, ""); print}' <<< "${_ret}")
-		db_songs=$(awk '/^songs: /{gsub(/songs: /, ""); print}' <<< "${_ret}")
-		db_albums=$(awk '/^albums: /{gsub(/albums: /, ""); print}' <<< "${_ret}")
-		last_update=$(awk '/^db_update: /{gsub(/db_update: /, ""); print}' <<< "${_ret}")
-		last_update=$(date -d @${last_update})
-		printf "${c2}Uptime:${c0}\t\t${uptime}\n"
-		printf "${c2}Playtime:${c0}\t${playtime}\n"
-		printf "${c2}Songs in DB:${c0}\t${db_songs}\n"
-		printf "${c2}Artists in DB:${c0}\t${db_artists}\n"
-		printf "${c2}Albums in DB:${c0}\t${db_albums}\n"
-		printf "${c2}Last DB Update:${c0}\t${last_update}\n"
+	'stop')
+		mpd_sndcommand stop
+	;;
+	'toggle')
+		mpd_sndcommand status
+		mpd_status=$(echo "$_ret" | grep '^state:' 2>/dev/null  | sed 's/state: //')
+		if [ "$mpd_status" = "pause" ]; then
+			mpd_sndcommand 'pause 0'
+		elif [ "$mpd_status" = "play" ]; then
+			mpd_sndcommand 'pause 1'
+		fi
 	;;
 	'update')
 		mpd_sndcommand update

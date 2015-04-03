@@ -18,29 +18,13 @@ Adds song at URI to current playlist. URI must be a full path
 relative to the MPD server's top level directory. If the URI
 contains spaces, it must be surrounded by single quotes (').
 .TP
-.BI next
-Jump to next song on playlist.
-.TP
-.BI prev
-Jump to previous song in playlist.
-.TP
-.BI pause
-Pauses playback at current point.
-.TP
-.BI stop
-Stops current playback. This will reset current song.
-.TP
-.BI play
-Resumes playback from paused or stopped.
-.TP
-.BI toggle
-Toggle playback between pause/play depending on current
-status. Useful for keybindings.
-.TP
 .BI current
 Displays info on current song in a colorful format. See
 the help for the optional long flag --format in the FLAGS 
 section for how to format the output of this command.
+.TP
+.BI help
+Display the help message.
 .TP
 .BI ls <URI>
 Lists all files under the relative directory in MPD's music
@@ -48,28 +32,31 @@ directory. All URIs with spaces must be surrounded in single quotes
 ('). Output is given in full path relative to top level directory of 
 MPD server music folder.
 .TP
+.BI next
+Jump to next song on playlist.
+.TP
+.BI pause
+Pauses playback at current point.
+.TP
+.BI play
+Resumes playback from paused or stopped.
+.TP
 .BI playlist
 Shows current playlist in order in a simple format.
 .TP
-.BI status
-Shows current status of MPD server. This includes current volume,
-current track title, next track title, and random/repeat status.
+.BI prev
+Jump to previous song in playlist.
 .TP
-.BI stats
-Shows some useful stats about the MPD server. This includes current
-MPD uptime, playtime, songs/artists/albums in database, and the date
-of the last database update.
+.BI raw
+You may use this to specify a raw query to the MPD server over TCP. If
+the query contains spaces, you must surround the query in single quotes (')
+for it to be sent.
 .TP
 .BI rm <ID>
 Removes song in playlist. This may take one of two arguments: the id 
 (position) of the song in the playlist that you want to remove or the
 pseudo argument 'current' that removes the currently playing track from
 the playlist and cycles to the next song id.
-.TP
-.BI raw
-You may use this to specify a raw query to the MPD server over TCP. If
-the query contains spaces, you must surround the query in single quotes (')
-for it to be sent.
 .TP
 .BI search <TAG> <QUERY>
 Search the MPD server's database for a file with TAG that matches or contains
@@ -81,6 +68,22 @@ in full path relative to top level directory of MPD server music folder.
 Used to display and/or set some of the current MPD server settings. Currently,
 the only supported settings are the toggline of random/repeat/crossfade.
 .TP
+.BI stats
+Shows some useful stats about the MPD server. This includes current
+MPD uptime, playtime, songs/artists/albums in database, and the date
+of the last database update.
+.TP
+.BI status
+Shows current status of MPD server. This includes current volume,
+current track title, next track title, and random/repeat status.
+.TP
+.BI stop
+Stops current playback. This will reset current song.
+.TP
+.BI toggle
+Toggle playback between pause/play depending on current status. Useful for 
+keybindings.
+.TP
 .BI update
 Updates/refreshes the MPD server's database.
 .TP
@@ -91,9 +94,6 @@ Changes the volume for the MPD server's output.
 This puts bmpc into a listening loop that waits for the MPD server to change
 playback status (next, prev, play, stop, pause). It will output every time there
 is a change in status. Useful for notification scripts.
-.TP
-.BI help
-Display the help message.
 
 .SH FLAGS
 .TP
