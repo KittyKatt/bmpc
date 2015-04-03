@@ -180,6 +180,13 @@ case "$1" in
 		printf "Source can be found at https://github.com/KittyKatt/bmpc\n"
 		exit 0
 	;;
+	'add')
+		_uri="${2}"
+		tmpv=$((${#_uri}-1))
+		if [[ "${_uri:${tmpv}:1}" == "/" ]]; then _uri="${_uri:0:${tmpv}}"; fi
+		mpd_sndcommand "add \"${_uri}\""
+		printf "${c1}>>>${c0} Successfully added song to current playlist.\n"
+	;;
 	'next')
 		mpd_sndcommand next
 		mpd_getinfo

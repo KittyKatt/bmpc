@@ -13,6 +13,11 @@ sockets) to communicate with MPD over a TCP port.
 
 .SH COMMANDS
 .TP
+.BI add <URI>
+Adds song at URI to current playlist. URI must be a full path
+relative to the MPD server's top level directory. If the URI
+contains spaces, it must be surrounded by single quotes (').
+.TP
 .BI next
 Jump to next song on playlist.
 .TP
