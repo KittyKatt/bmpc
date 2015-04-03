@@ -292,16 +292,17 @@ case "$1" in
 		echo "$_ret"
 	;;
 	'rm')
-		if [ ! "$2" ]; then echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
+		_songid="${2}"
+		if [ ! "${_songid}" ]; then printf " ${c5}>>>${c0} You must supply 'rm' with a songid or current.\n"
 		else
-			if [ "$2" == "current" ]; then
+			if [ "${_songid}" == "current" ]; then
 				mpd_getinfo
 				mpd_sndcommand next
-				mpd_sndcommand "delete ${mpdSongID}"
-			elif [ `echo "$2" | grep "^[0-9]*$" 2>/dev/null` ]; then
-				mpd_sndcommand "delete ${2}"
+				mpd_sndcommand "deleteid ${mpdSongID}"
+			elif [ $(grep "^[0-9]*$" 2>/dev/null <<< "${_songid}") ]; then
+				mpd_sndcommand "deleteid ${2}"
 			else
-				echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
+				printf " ${c5}>>>${c0} You must supply 'rm' with a songid or current.\n"
 			fi
 		fi
 	;;
