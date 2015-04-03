@@ -258,12 +258,11 @@ case "$1" in
 	'playlist')
 		mpd_sndcommand playlistinfo
 		# echo "$_ret" | awk -F': ' '$1 ~ /file/ && NR != 1 { print arr["Pos"] " - " arr["Title"] " - " arr["Artist"] " - " arr["Album"]; } {arr[$1] = $2}'
-		playlistinfo=$(echo "${_ret}" | grep -E '(^Title:|^Artist:|^Album:)')
+		playlistinfo=$(echo "${_ret}" | grep -E '(^Title:|^Artist:)')
 		playlistinfo=$(echo "${playlistinfo}" | awk '{
 			gsub(/Artist: /, "")
 			gsub(/Title: /, ";")
-			gsub(/Album: /, ";")
-			if (NR % 3)
+			if (NR % 2)
 			printf("%s", $0)
 			else
 			printf("%s\n", $0)
@@ -271,7 +270,7 @@ case "$1" in
 		OLDIFS=${IFS}
 		IFS=$'\n'
 		for i in "${playlistinfo}"; do
-			awk -F';' '{print $2 " - " $1 " - " $3}' <<< "${i}"
+			awk -F';' '{print $1 " - " $2}' <<< "${i}"
 		done
 		IFS=${OLDIFS}
 	;;
