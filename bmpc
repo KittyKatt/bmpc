@@ -384,6 +384,12 @@ case "$1" in
 		printf "${c2}Albums in DB:${c0}\t${db_albums}\n"
 		printf "${c2}Last DB Update:${c0}\t${last_update}\n"
 	;;
+	'update')
+		mpd_sndcommand update
+		update_num=$(awk -F':' '/^updating_db/ {print $2}' <<< "${_ret}")
+		update_num=${update_num/ /}
+		printf "${c1}>>>${c0} Database update started (Update #${update_num} since the server was started).\n"
+	;;
 	'vol')
 		if [ -z "$2" ]; then
 			mpd_sndcommand status
