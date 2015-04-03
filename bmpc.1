@@ -64,6 +64,17 @@ for it to be sent.
 Used to display and/or set some of the current MPD server settings. Currently,
 the only supported settings are the toggline of random/repeat/crossfade.
 .TP
+.BI update
+Updates/refreshes the MPD server's database.
+.TP
+.BI vol
+Changes the volume for the MPD server's output.
+.TP
+.BI wait
+This puts bmpc into a listening loop that waits for the MPD server to change
+playback status (next, prev, play, stop, pause). It will output every time there
+is a change in status. Useful for notification scripts.
+.TP
 .BI help
 Display the help message.
 
