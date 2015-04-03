@@ -40,8 +40,8 @@ section for how to format the output of this command.
 .BI ls <URI>
 Lists all files under the relative directory in MPD's music
 directory. All URIs with spaces must be surrounded in single quotes
-('). Output is in full path from top level of music directory for
-easy addition using the add command.
+('). Output is given in full path relative to top level directory of 
+MPD server music folder.
 .TP
 .BI playlist
 Shows current playlist in order in a simple format.
@@ -65,6 +65,12 @@ the playlist and cycles to the next song id.
 You may use this to specify a raw query to the MPD server over TCP. If
 the query contains spaces, you must surround the query in single quotes (')
 for it to be sent.
+.TP
+.BI search <TAG> <QUERY>
+Search the MPD server's database for a file with TAG that matches or contains
+QUERY. You may search any TAG type that the MPD server supports. If TAG or QUERY
+contains spaces, they must be surrounded in single quotes ('). Output is given
+in full path relative to top level directory of MPD server music folder.
 .TP
 .BI set
 Used to display and/or set some of the current MPD server settings. Currently,

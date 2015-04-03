@@ -355,6 +355,26 @@ case "$1" in
 		mpd_sndcommand "$_opts"
 		echo "$_ret"
 	;;
+	'search')
+		_tag="${2}"
+		_query="${3}"
+		mpd_sndcommand "search "${_tag}" "${_query}""
+		OLDIFS=${IFS}
+		IFS=$'\n'
+		_result=( $(grep -E '^file: ' <<< "${_ret}" ) )
+		if [[ -n "${_result}" ]]; then
+			printf "${c1}>>>${c2} Search Results: ${c0}\n"
+			n=1
+			for r in "${_result[@]}"; do
+				printf "${c2}${n} ${c0}${r/file: /}\n"
+				$((n++))
+			done
+		else
+			printf "${c5}>>>${c0} Search results came back empty. Try a different search TAG or QUERY.\n"
+			exit 1
+		fi
+		IFS=${OLDIFS}
+	;;
 	'status')
 		mpd_sndcommand 'status'
 		mpd_state=$(awk  '/^state: /' <<< "${_ret}")
