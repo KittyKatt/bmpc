@@ -37,6 +37,12 @@ Displays info on current song in a colorful format. See
 the help for the optional long flag --format in the FLAGS 
 section for how to format the output of this command.
 .TP
+.BI ls <URI>
+Lists all files under the relative directory in MPD's music
+directory. All URIs with spaces must be surrounded in single quotes
+('). Output is in full path from top level of music directory for
+easy addition using the add command.
+.TP
 .BI playlist
 Shows current playlist in order in a simple format.
 .TP
@@ -49,7 +55,7 @@ Shows some useful stats about the MPD server. This includes current
 MPD uptime, playtime, songs/artists/albums in database, and the date
 of the last database update.
 .TP
-.BI rm
+.BI rm <ID>
 Removes song in playlist. This may take one of two arguments: the id 
 (position) of the song in the playlist that you want to remove or the
 pseudo argument 'current' that removes the currently playing track from
@@ -67,7 +73,7 @@ the only supported settings are the toggline of random/repeat/crossfade.
 .BI update
 Updates/refreshes the MPD server's database.
 .TP
-.BI vol
+.BI vol <+/-#>
 Changes the volume for the MPD server's output.
 .TP
 .BI wait

@@ -244,6 +244,27 @@ case "$1" in
 			echo -e " ${c1}NP:  ${c2}(${c0} ${mpdSongID:-N/A} ${bold}/${c0} ${mpdPlaylistL:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdTitle:-N/A} ${bold}-${c0} ${mpdArtist:-N/A} ${bold}-${c0} ${mpdAlbum:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdGenre:-N/A}${bold} -${c0} ${mpdDate:-N/A} ${c2})${c0} ${c2}(${c0} ${mpdNowTime:-N/A} / ${mpdLength:-N/A}${bold} at${c0} ${mpdBitrate:-N/A} kbps ${c2})${c0}"
 		fi
 	;;
+	'ls')
+		_uri="${2}"
+		tmpv=$((${#_uri}-1))
+		if [[ "${_uri:${tmpv}:1}" == "/" ]]; then _uri="${_uri:0:${tmpv}}"; fi
+		mpd_sndcommand "lsinfo \"${_uri}\""
+		OLDIFS=${IFS}
+		IFS=$'\n'
+		_dirs=( $(grep "directory: " <<< "${_ret}") )
+		_files=( $(grep "file: " <<< "${_ret}") )
+		_playlists=( $(grep "playlist: " <<< "${_ret}") )
+		for d in "${_dirs[@]}"; do
+			printf "${c2}${d/directory: /}${c0}\n"
+		done
+		for f in "${_files[@]}"; do
+			printf "${c1}${f/file: /}${c0}\n"
+		done
+		for p in "${_playlists[@]}"; do
+			printf "${c4}${p/playlist: /}${c0}\n"
+		done
+		IFS=${OLDIFS}
+	;;
 	'rm')
 		if [ ! "$2" ]; then echo -e " ${c5} ERROR!${c0}  You must supply 'rm' with a songid or current."
 		else
